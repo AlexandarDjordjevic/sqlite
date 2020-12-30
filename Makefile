@@ -1,17 +1,17 @@
 
-SRC = main.c source/helpers.c source/sqlite.c
+SRC = main.c source/helpers.c source/Database.cpp
 INC = -Iinclude
-FLAGS += -std=c99
+FLAGS += -std=c++11
 BIN = application
 OUT_DIR = build
 
 .PHONY: all
 all: prepare_OUT_DIR
-	$(CC) $(SRC) $(FLAGS) $(INC) -o $(OUT_DIR)/$(BIN)
+	$(CXX) $(SRC) $(FLAGS) $(INC) -o $(OUT_DIR)/$(BIN)
 
 .PHONY: run
 run: all
-	./$(OUT_DIR)/$(BIN)
+	./$(OUT_DIR)/$(BIN) $(PWD)/College.db
 
 prepare_OUT_DIR:
 	mkdir -p $(OUT_DIR)

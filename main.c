@@ -1,10 +1,11 @@
 #include <stdio.h>
 
-#include <sqlite.h>
+#include <SQLite/Database.hpp>
 
 int main(int argn, char* argv[]){
   
-  SQLite_ParseFile("/home/syrmia/Documents/work/sw/C/College.db");
+  auto database = new SQLite::Database();
+  database->LoadFromFile(std::string(argv[1]));
 
   return 0;
 }

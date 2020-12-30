@@ -1,9 +1,19 @@
+/**
+ * @author Aleksandar Djordjevic (alexandar1608@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2020-12-30
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
+
 #pragma once
 
 #include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <string.h>
+#include <string>
 
 #include "helpers.h"
 
@@ -11,7 +21,7 @@
  * @brief SQL Header
  * 
  * Offset	Size	Description
- * 0	    16	    The header string: "SQLite format 3\000"
+ * 0	    16	    The header string: "Database format 3\000"
  * 16	    2	    The database page size in bytes. Must be a power of two between 512 and 32768 inclusive, or the value 1
  * representing  a page size of 65536.
  * 18	    1	    File format write version. 1 for legacy; 2 for WAL.
@@ -46,39 +56,66 @@
  *  );
 */
 
-typedef enum __attribute__((__packed__)){
-    Legacy = 0x01,
-    WAL    = 0x02
-}rw_version_t;
+namespace SQLite
+{
+class Database{
+private:
+    /* Typedefs */
+    typedef enum __attribute__((__packed__)){
+        Legacy = 0x01,
+        WAL    = 0x02
+    }rw_version_t;
 
-typedef struct __attribute__((__packed__)){
-    char header_string[16];
-    uint16_t db_page_size;
-    rw_version_t write_version;
-    rw_version_t read_version;
-    uint8_t bytes_of_unused_space;
-    uint8_t maximum_payload_fraction;   //Must be 64.
-    uint8_t minimum_payload_fraction;   //Must be 32.
-    uint8_t leaf_payload_fraction;   //Must be 32.
-    uint32_t file_change_counter;
-    uint32_t db_size_in_pages;
-    uint32_t first_freelist_page;
-    uint32_t number_of_freelist_pages;
-    uint32_t schema_cookie;
-    uint32_t schema_format_number;
-    uint32_t default_page_cache_size;
-    uint32_t root_b_tree_page;
-    uint32_t text_encoding;
-    uint32_t user_version;
-    uint32_t incremental_vacuum_mode;
-    uint32_t application_id;
-    uint8_t reserved[20];
-    uint32_t version_valid_for;
-    uint32_t sqlite_version_number;
-}sql_header_t;
+    struct __attribute__((__packed__)) sql_header{
+        char header_string[16];
+        uint16_t db_page_size;
+        rw_version_t write_version;
+        rw_version_t read_version;
+        uint8_t bytes_of_unused_space;
+        uint8_t maximum_payload_fraction;   //Must be 64.
+        uint8_t minimum_payload_fraction;   //Must be 32.
+        uint8_t leaf_payload_fraction;   //Must be 32.
+        uint32_t file_change_counter;
+        uint32_t db_size_in_pages;
+        uint32_t first_freelist_page;
+        uint32_t number_of_freelist_pages;
+        uint32_t schema_cookie;
+        uint32_t schema_format_number;
+        uint32_t default_page_cache_size;
+        uint32_t root_b_tree_page;
+        uint32_t text_encoding;
+        uint32_t user_version;
+        uint32_t incremental_vacuum_mode;
+        uint32_t application_id;
+        uint8_t reserved[20];
+        uint32_t version_valid_for;
+        uint32_t sqlite_version_number;
+    };
+public:
+    const std::string HEADER_STRING = "Database format 3";
 
+    /**
+     * @brief Default contstructor
+     * 
+     */
+    Database();
 
-extern bool SQLite_ParseFile(const char* file_path);
+    /**
+     * @brief Default destructor
+     * 
+     */
+    ~Database();
 
-/* Helper functions */
-extern uint32_t GetBigEndianValue(uint32_t value);
+    Database(const Database &) = delete;
+    Database &operator=(const Database &) = delete;
+    Database(Database &&) = delete;
+    Database &operator=(const Database &&) = delete;
+
+    void LoadFromFile(const std::string& file_path);
+    bool ParseHeader(const uint8_t* header_buffer);
+    void PrintInfo();
+private:
+    sql_header header;
+};
+
+} // namespace SQLite
