@@ -1,5 +1,6 @@
-#include <helpers.h>
+#include <Helpers.hpp>
 
+namespace Helpers{
 /**
  * @brief change endian of uint32_t variable
  * 
@@ -23,7 +24,8 @@ uint16_t ChangeEndian_U16(uint16_t value){
     return ((value & 0x00ff) << 8) + 
            ((value & 0xff00) << 8);
 }
-
+#include <stdlib.h>
+#include <stdio.h>
 /**
  * @brief Check if host machine is little endian
  * 
@@ -31,7 +33,9 @@ uint16_t ChangeEndian_U16(uint16_t value){
  * @return false big endian
  */
 bool IsLittleEndian(){
+    printf("Check if is little endian!\n");
     uint32_t value = 0x01;
     uint8_t* ptr = (uint8_t*) &value;
     return *ptr == 0x01;
-}
+}   
+} //namsespace Helpers

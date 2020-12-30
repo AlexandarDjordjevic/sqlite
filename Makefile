@@ -1,5 +1,5 @@
 
-SRC = main.c source/helpers.c source/Database.cpp
+SRC = main.c source/Helpers.cpp source/Database.cpp
 INC = -Iinclude
 FLAGS += -std=c++11
 BIN = application

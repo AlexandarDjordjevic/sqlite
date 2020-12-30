@@ -15,8 +15,6 @@
 #include <stdbool.h>
 #include <string>
 
-#include "helpers.h"
-
 /**
  * @brief SQL Header
  * 
@@ -116,6 +114,7 @@ public:
     void PrintInfo();
 private:
     sql_header header;
+    std::string database_file;
 };
 
 } // namespace SQLite
