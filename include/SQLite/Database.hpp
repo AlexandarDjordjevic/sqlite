@@ -90,7 +90,7 @@ private:
         uint32_t sqlite_version_number;
     };
 public:
-    const std::string HEADER_STRING = "Database format 3";
+    const std::string HEADER_STRING = "SQLite format 3";
 
     /**
      * @brief Default contstructor
@@ -109,12 +109,14 @@ public:
     Database(Database &&) = delete;
     Database &operator=(const Database &&) = delete;
 
-    void LoadFromFile(const std::string& file_path);
+    bool LoadFromFile(const std::string& file_path);
     bool ParseHeader(const uint8_t* header_buffer);
     void PrintInfo();
+    void SetSQLiteVersion(uint32_t numeric_version);
 private:
     sql_header header;
     std::string database_file;
+    std::string sqlite_version;
 };
 
 } // namespace SQLite

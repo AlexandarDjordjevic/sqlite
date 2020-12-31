@@ -1,5 +1,6 @@
 #include <SQLite/Database.hpp>
 #include <string.h>
+#include <sstream>
 #include <Helpers.hpp>
 
 #define COLOR_RESET "\u001b[0m"
@@ -11,34 +12,33 @@ namespace SQLite
     Database::Database(){
 
     }
-    void Database::LoadFromFile(const std::string& file_path) 
+
+    bool Database::LoadFromFile(const std::string& file_path) 
     {
         database_file = file_path;
         FILE* db = fopen(file_path.c_str(), "rb");
         if (db == NULL){
-            perror("Fail to open file");
-            return;
+            perror("Fail to open database file");
+            return false;
         }
-        printf("Database file: %s is ready!\n", file_path.c_str());
 
         uint8_t data[sizeof(sql_header)];
         size_t fetched = fread(data, 1, sizeof(sql_header), db);
-
-        printf("Fetched %ld bytes from database file\n", fetched);
-        if (sizeof(sql_header) == fetched){    
-            printf("Parsing header\n");
-            if ( ParseHeader(data) ){
+        if (sizeof(sql_header) == fetched){
+            if (ParseHeader(data) == false){
                 printf(COLOR_RED);
-                printf("Error parsing header\n");
+                printf("Invalid SQLite header.\n");
                 printf(COLOR_RESET);
+                return false;
             }
             PrintInfo();
         }
+        return true;
     }
 
     bool Database::ParseHeader(const uint8_t* header_buffer){
         memcpy((void *)&header, header_buffer, sizeof(header));
-        if (strcmp(Database::HEADER_STRING.c_str(), header.header_string) != 0) 
+        if (strcmp(Database::HEADER_STRING.c_str(), header.header_string) != 0)
             return false;
 
         if ( Helpers::IsLittleEndian() ){ 
@@ -46,6 +46,8 @@ namespace SQLite
             header.file_change_counter = Helpers::ChangeEndian_U32(header.file_change_counter);    
             header.db_size_in_pages = Helpers::ChangeEndian_U32(header.db_size_in_pages);
             header.version_valid_for = Helpers::ChangeEndian_U32(header.version_valid_for);
+            header.sqlite_version_number = Helpers::ChangeEndian_U32(header.sqlite_version_number);
+            SetSQLiteVersion(header.sqlite_version_number);
         }
 
         return true;
@@ -54,7 +56,8 @@ namespace SQLite
     void Database::PrintInfo(){
         printf(COLOR_GREEN);
         printf("\n*******************************************************************************\n");
-        printf(" File: %s\n", database_file.c_str());
+        printf(" Database File:   %s\n", database_file.c_str());
+        printf(" SQLite Version:  %s\n", sqlite_version.c_str());
         printf("*******************************************************************************\n");
         printf("Database data: \n");
         printf("-------------------------------------------------------------------------------\n");
@@ -67,10 +70,20 @@ namespace SQLite
         printf("\tMinumum Payload Fraction .... %d\n", header.minimum_payload_fraction);
         printf("\tLeaf payload fraction ....... %d\n", header.leaf_payload_fraction);
         printf("\tFile change counter ......... %d\n", header.file_change_counter);
-        printf("\tVersion Number .............. %08x\n", header.sqlite_version_number);
+        printf("\tSQLite Version Number ....... %d\n", header.sqlite_version_number);
         printf("\tVersion Valid ............... %d\n", header.version_valid_for);
         printf("-------------------------------------------------------------------------------\n");
         printf("*******************************************************************************\n");
         printf(COLOR_RESET);
+    }
+
+    void Database::SetSQLiteVersion(uint32_t numeric_version){
+        auto x = numeric_version / 1000000;
+        auto y = (numeric_version % 1000000) / 1000;
+        auto z = numeric_version % 1000;
+
+        std::stringstream version;
+        version << std::to_string(x) << '.' << std::to_string(y) << '.' << std::to_string(z);
+        sqlite_version = version.str();
     }
 }
