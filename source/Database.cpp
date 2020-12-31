@@ -76,6 +76,11 @@ namespace SQLite
         printf("*******************************************************************************\n");
         printf(COLOR_RESET);
     }
+    
+    std::string Database::GetSQLiteVersion() 
+    {
+        return sqlite_version;
+    }
 
     void Database::SetSQLiteVersion(uint32_t numeric_version){
         auto x = numeric_version / 1000000;

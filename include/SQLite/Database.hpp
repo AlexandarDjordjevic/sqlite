@@ -112,7 +112,10 @@ public:
     bool LoadFromFile(const std::string& file_path);
     bool ParseHeader(const uint8_t* header_buffer);
     void PrintInfo();
+    std::string GetSQLiteVersion();
+private:
     void SetSQLiteVersion(uint32_t numeric_version);
+
 private:
     sql_header header;
     std::string database_file;
