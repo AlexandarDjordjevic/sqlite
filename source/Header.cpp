@@ -132,6 +132,66 @@ namespace SQLite
         return header_ctx.db_size_in_pages;
     }
     
+    uint32_t Header::GetFirstFreelistPage() 
+    {
+        return header_ctx.first_freelist_page;
+    }
+    
+    uint32_t Header::GetNumberOfFreelistPages() 
+    {
+        return header_ctx.number_of_freelist_pages;
+    }
+    
+    uint32_t Header::GetSchemaCookie() 
+    {
+        return header_ctx.schema_cookie;
+    }
+    
+    uint32_t Header::GetSchemaFormatNumber() 
+    {
+        return header_ctx.schema_format_number;
+    }
+    
+    uint32_t Header::GetDefaultPageCacheSize() 
+    {
+        return header_ctx.default_page_cache_size;
+    }
+    
+    uint32_t Header::GetRootBTreePage() 
+    {
+        return header_ctx.root_b_tree_page;
+    }
+    
+    Header::encoding Header::GetTextEncoding() 
+    {
+        return header_ctx.text_encoding;
+    }
+    
+    uint32_t Header::GetUserVersion() 
+    {
+        return header_ctx.user_version;
+    }
+    
+    uint32_t Header::GetIncrementalVacuumMode() 
+    {
+        return header_ctx.incremental_vacuum_mode;
+    }
+    
+    uint32_t Header::GetApplicationId() 
+    {
+        return header_ctx.application_id;
+    }
+    
+    uint32_t Header::GetVersionValidFor() 
+    {
+        return header_ctx.version_valid_for;
+    }
+    
+    uint32_t Header::GetSqliteVersionNumber() 
+    {
+        return header_ctx.sqlite_version_number;
+    }
+    
 
 
     void Header::SetSQLiteVersion(uint32_t numeric_version){

@@ -63,6 +63,12 @@ public:
         Legacy = 0x01,
         WAL    = 0x02
     };
+
+    enum class encoding : uint32_t { 
+        UTF8 = 1,
+        UTF16LE = 2, 
+        UTF16BE = 3
+    };
 private:
 
     struct __attribute__((__packed__)) sql_header{
@@ -82,7 +88,7 @@ private:
         uint32_t schema_format_number;
         uint32_t default_page_cache_size;
         uint32_t root_b_tree_page;
-        uint32_t text_encoding;
+        encoding text_encoding;
         uint32_t user_version;
         uint32_t incremental_vacuum_mode;
         uint32_t application_id;
@@ -110,32 +116,187 @@ public:
     Header(Header &&) = delete;
     Header &operator=(const Header &&) = delete;
 
+    /**
+     * @brief Load database from file
+     * 
+     * @param file_path path to database file
+     * @return true
+     * @return false 
+     */
     bool LoadFromFile(const std::string& file_path);
+
+    /**
+     * @brief Parse database header 
+     * 
+     * @param header_buffer 
+     * @return true 
+     * @return false 
+     */
     bool ParseHeader(const uint8_t* header_buffer);
+
+    /**
+     * @brief Print database info
+     * 
+     */
     void PrintInfo();
 
+    /**
+     * @brief Get the header string: "SQLite format 3\000"
+     * 
+     * @return std::string
+     */
     std::string GetHeaderString();
+
+    /**
+     * @brief Get the database page size in bytes. Must be a power of two between 512 and 32768 inclusive, 
+     * or the value 1 representing a page size of 65536.
+     * 
+     * @return uint16_t 
+     */
     uint16_t GetDatabasePageSize();
+
+    /**
+     * @brief Get the file format write version. 1 for legacy; 2 for WAL.
+     * 
+     * @return rw_version 
+     */
     rw_version GetWriteVersion();
+
+    /**
+     * @brief Get the file format read version. 1 for legacy; 2 for WAL.
+     * 
+     * @return rw_version 
+     */
     rw_version GetReadVersion();
+
+    /**
+     * @brief Get number of bytes of unused "reserved" space at the end of each page. Usually 0.
+     * 
+     * @return uint8_t 
+     */
     uint8_t GetBytesOfPageUnusedSpace();
+
+    /**
+     * @brief Get the maximum embedded payload fraction. Must be 64.
+     * 
+     * @return uint8_t 
+     */
     uint8_t GetMaximumPayloadFraction();
+
+    /**
+     * @brief Get the minimum embedded payload fraction. Must be 32.
+     * 
+     * @return uint8_t 
+     */
     uint8_t GetMinimumPayloadFraction();
+
+    /**
+     * @brief Get the leaf payload fraction. Must be 32.
+     * 
+     * @return uint8_t 
+     */
     uint8_t GetLeafPayloadFraction();
+
+    /**
+     * @brief Get the file change counter
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetFileChangeCounter();
+
+    /**
+     * @brief Get the database file in pages. The "in-header database size".
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetDatabaseSizeInPages();
 
+    /**
+     * @brief Get the page number of the first freelist trunk page.
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetFirstFreelistPage();
+
+    /**
+     * @brief Get the total number of freelist pages.
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetNumberOfFreelistPages();
+
+    /**
+     * @brief Get the schema cookie object
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetSchemaCookie();
+
+    /**
+     * @brief Get the schema format number. Supported schema formats are 1, 2, 3, and 4.
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetSchemaFormatNumber();
+
+    /**
+     * @brief Get the default page cache size.
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetDefaultPageCacheSize();
+
+    /**
+     * @brief Get the page number of the largest root b-tree page when in auto-vacuum or 
+     * incremental-vacuum modes, or zero otherwise.
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetRootBTreePage();
-    uint32_t GetTextEncoding();
+
+    /**
+     * @brief Get the database text encoding. A value of 1 means UTF-8. A value of 2 means UTF-16le. A value of 3 means UTF-16be.
+     * 
+     * @return encoding 
+     */
+    encoding GetTextEncoding();
+
+    /**
+     * @brief Get the "user version" as read and set by the user_version pragma.
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetUserVersion();
+
+    /**
+     * @brief  True (non-zero) for incremental-vacuum mode. False (zero) otherwise
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetIncrementalVacuumMode();
+
+    /**
+     * @brief Get the "Application ID" set by PRAGMA application_id.
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetApplicationId();
+
+    /**
+     * @brief Get the version valid for number.
+     * 
+     * @return uint32_t 
+     */
     uint32_t GetVersionValidFor();
+
+    /**
+     * @brief Get the sqlite version number. Convert to format x.y.z with following formula
+     * x = numeric_version / 1000000;
+     * y = (numeric_version % 1000000) / 1000;
+     * z = numeric_version % 1000;
+     * example: "3.30.1" = 3030001
+     * @return uint32_t 
+     */
     uint32_t GetSqliteVersionNumber();
 
 private:
