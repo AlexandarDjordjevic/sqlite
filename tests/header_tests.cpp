@@ -56,6 +56,53 @@ TEST_F(DatabaseFileMock, InvalidHeaderFile){
 }
 
 
-TEST_F(DatabaseFileMock, ValidHeaderFile){
+TEST_F(DatabaseFileMock, GetHeaderString){
     ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ("SQLite format 3\x0", header.GetHeaderString());
 }
+
+TEST_F(DatabaseFileMock, GetDatabasePageSize){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(4096, header.GetDatabasePageSize());
+}
+
+TEST_F(DatabaseFileMock, GetWriteVersion){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(SQLite::Header::rw_version::Legacy, header.GetWriteVersion());
+}
+
+TEST_F(DatabaseFileMock, GetReadVersion){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(SQLite::Header::rw_version::Legacy, header.GetReadVersion());
+}
+
+TEST_F(DatabaseFileMock, GetBytesOfPageUnusedSpace){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(0, header.GetBytesOfPageUnusedSpace());
+}
+
+TEST_F(DatabaseFileMock, GetMaximumPayloadFraction){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(64, header.GetMaximumPayloadFraction());
+}
+
+TEST_F(DatabaseFileMock, GetMinimumPayloadFraction){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(32, header.GetMinimumPayloadFraction());
+}
+
+TEST_F(DatabaseFileMock, GetLeafPayloadFraction){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(32, header.GetLeafPayloadFraction());
+}
+
+TEST_F(DatabaseFileMock, GetFileChangeCounter){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(4, header.GetFileChangeCounter());
+}
+
+TEST_F(DatabaseFileMock, GetDatabaseSizeInPages){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(4, header.GetDatabaseSizeInPages());
+}
+

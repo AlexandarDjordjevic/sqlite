@@ -1,7 +1,8 @@
-#include <SQLite/Header.hpp>
 #include <string.h>
 #include <sstream>
+#include <SQLite/Header.hpp>
 #include <Helpers.hpp>
+
 
 #define COLOR_RESET "\u001b[0m"
 #define COLOR_GREEN "\u001b[32m"
@@ -67,8 +68,8 @@ namespace SQLite
         printf("-------------------------------------------------------------------------------\n");
         printf("\tHeader String ............... %s\n", header_ctx.header_string);
         printf("\tPage Size ................... %d\n", header_ctx.db_page_size);
-        printf("\tWrite Version ............... %d\n", header_ctx.write_version);
-        printf("\tRead Version ................ %d\n", header_ctx.read_version);
+        printf("\tWrite Version ............... %d\n", int(header_ctx.write_version));
+        printf("\tRead Version ................ %d\n", int(header_ctx.read_version));
         printf("\tDatabase size in pages ...... %d\n", header_ctx.db_size_in_pages);
         printf("\tMaximum Payload Fraction .... %d\n", header_ctx.maximum_payload_fraction);
         printf("\tMinumum Payload Fraction .... %d\n", header_ctx.minimum_payload_fraction);
@@ -81,11 +82,6 @@ namespace SQLite
         printf(COLOR_RESET);
     }
     
-    std::string Header::GetSQLiteVersion() 
-    {
-        return sqlite_version;
-    }
-    
     std::string Header::GetHeaderString() 
     {
         return std::string(header_ctx.header_string);
@@ -95,6 +91,47 @@ namespace SQLite
     {
         return header_ctx.db_page_size;
     }
+    
+    Header::rw_version Header::GetWriteVersion() 
+    {
+        return header_ctx.write_version;
+    }
+    
+    Header::rw_version Header::GetReadVersion() 
+    {
+        return header_ctx.read_version;
+    }
+    
+    uint8_t Header::GetBytesOfPageUnusedSpace() 
+    {
+        return header_ctx.bytes_of_page_unused_space;
+    }
+    
+    uint8_t Header::GetMaximumPayloadFraction() 
+    {
+        return header_ctx.maximum_payload_fraction;
+    }
+    
+    uint8_t Header::GetMinimumPayloadFraction() 
+    {
+        return header_ctx.minimum_payload_fraction;
+    }
+    
+    uint8_t Header::GetLeafPayloadFraction() 
+    {
+        return header_ctx.leaf_payload_fraction;
+    }
+    
+    uint32_t Header::GetFileChangeCounter() 
+    {
+        return header_ctx.file_change_counter;
+    }
+    
+    uint32_t Header::GetDatabaseSizeInPages() 
+    {
+        return header_ctx.db_size_in_pages;
+    }
+    
 
 
     void Header::SetSQLiteVersion(uint32_t numeric_version){

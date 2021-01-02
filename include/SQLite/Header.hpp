@@ -57,19 +57,20 @@
 namespace SQLite
 {
 class Header{
-private:
+public:
     /* Typedefs */
-    typedef enum __attribute__((__packed__)){
+    enum class rw_version : uint8_t {
         Legacy = 0x01,
         WAL    = 0x02
-    }rw_version_t;
+    };
+private:
 
     struct __attribute__((__packed__)) sql_header{
         char header_string[16];
         uint16_t db_page_size;
-        rw_version_t write_version;
-        rw_version_t read_version;
-        uint8_t bytes_of_unused_space;
+        rw_version write_version;
+        rw_version read_version;
+        uint8_t bytes_of_page_unused_space;
         uint8_t maximum_payload_fraction;   //Must be 64.
         uint8_t minimum_payload_fraction;   //Must be 32.
         uint8_t leaf_payload_fraction;   //Must be 32.
@@ -112,19 +113,18 @@ public:
     bool LoadFromFile(const std::string& file_path);
     bool ParseHeader(const uint8_t* header_buffer);
     void PrintInfo();
-    std::string GetSQLiteVersion();
 
     std::string GetHeaderString();
-
     uint16_t GetDatabasePageSize();
-    rw_version_t GetWriteVersion();
-    rw_version_t GetReadVersion();
-    uint8_t GetBytesOfUnusedSpace();
+    rw_version GetWriteVersion();
+    rw_version GetReadVersion();
+    uint8_t GetBytesOfPageUnusedSpace();
     uint8_t GetMaximumPayloadFraction();
     uint8_t GetMinimumPayloadFraction();
     uint8_t GetLeafPayloadFraction();
     uint32_t GetFileChangeCounter();
     uint32_t GetDatabaseSizeInPages();
+
     uint32_t GetFirstFreelistPage();
     uint32_t GetNumberOfFreelistPages();
     uint32_t GetSchemaCookie();

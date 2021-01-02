@@ -24,8 +24,7 @@ uint16_t ChangeEndian_U16(uint16_t value){
     return ((value & 0x00ff) << 8) + 
            ((value & 0xff00) << 8);
 }
-#include <stdlib.h>
-#include <stdio.h>
+
 /**
  * @brief Check if host machine is little endian
  * 
