@@ -8,15 +8,32 @@ Makefile, GCC, CLANG
 
 ## Build
 
-Build target:
-``` 
+Build all target (lib, tests, main app):
+
+```Makefile
 make all
 ```
-Build and run target:
+
+Make and run main app:
+
+```Makefile
+make run_main
 ```
-make run
+
+Make and run all unit tests:
+
+```Makefile
+make run_all_tests
 ```
+
+Make and run header unit tests:
+
+```Makefile
+make run_header_tests
+```
+
 Clean:
-```
+
+```Makefile
 make clean
 ```

@@ -19,7 +19,7 @@
  * @brief SQL Header
  * 
  * Offset	Size	Description
- * 0	    16	    The header string: "Database format 3\000"
+ * 0	    16	    The header string: "Header format 3\000"
  * 16	    2	    The database page size in bytes. Must be a power of two between 512 and 32768 inclusive, or the value 1
  * representing  a page size of 65536.
  * 18	    1	    File format write version. 1 for legacy; 2 for WAL.
@@ -56,7 +56,7 @@
 
 namespace SQLite
 {
-class Database{
+class Header{
 private:
     /* Typedefs */
     typedef enum __attribute__((__packed__)){
@@ -96,28 +96,29 @@ public:
      * @brief Default contstructor
      * 
      */
-    Database();
+    Header();
 
     /**
      * @brief Default destructor
      * 
      */
-    ~Database();
+    ~Header();
 
-    Database(const Database &) = delete;
-    Database &operator=(const Database &) = delete;
-    Database(Database &&) = delete;
-    Database &operator=(const Database &&) = delete;
+    Header(const Header &) = delete;
+    Header &operator=(const Header &) = delete;
+    Header(Header &&) = delete;
+    Header &operator=(const Header &&) = delete;
 
     bool LoadFromFile(const std::string& file_path);
     bool ParseHeader(const uint8_t* header_buffer);
     void PrintInfo();
     std::string GetSQLiteVersion();
+    
 private:
     void SetSQLiteVersion(uint32_t numeric_version);
 
 private:
-    sql_header header;
+    sql_header header_ctx;
     std::string database_file;
     std::string sqlite_version;
 };

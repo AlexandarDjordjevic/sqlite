@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include <SQLite/Database.hpp>
+#include <SQLite/Header.hpp>
 
 int main(int argn, char* argv[]){
   
-  auto database = new SQLite::Database();
-  database->LoadFromFile(std::string(argv[1]));
+  auto database_header = new SQLite::Header();
+  database_header->LoadFromFile(std::string(argv[1]));
 
   return 0;
 }
