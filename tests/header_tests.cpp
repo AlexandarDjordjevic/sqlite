@@ -106,3 +106,62 @@ TEST_F(DatabaseFileMock, GetDatabaseSizeInPages){
     ASSERT_EQ(4, header.GetDatabaseSizeInPages());
 }
 
+TEST_F(DatabaseFileMock, GetFirstFreelistPage){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(0, header.GetFirstFreelistPage());
+}
+
+TEST_F(DatabaseFileMock, GetNumberOfFreelistPages){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(0, header.GetNumberOfFreelistPages());
+}   
+
+TEST_F(DatabaseFileMock, GetSchemaCookie){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(3, header.GetSchemaCookie());
+}   
+
+TEST_F(DatabaseFileMock, GetSchemaFormatNumber){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(4, header.GetSchemaFormatNumber());
+}    
+
+TEST_F(DatabaseFileMock, GetDefaultPageCacheSize){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(0, header.GetDefaultPageCacheSize());
+}    
+
+TEST_F(DatabaseFileMock, GetRootBTreePage){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(0, header.GetRootBTreePage());
+}    
+
+TEST_F(DatabaseFileMock, GetTextEncoding){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(SQLite::Header::encoding::UTF8, header.GetTextEncoding());
+}    
+
+TEST_F(DatabaseFileMock, GetUserVersion){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(0, header.GetUserVersion());
+}    
+
+TEST_F(DatabaseFileMock, GetIncrementalVacuumMode){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(0, header.GetIncrementalVacuumMode());
+}    
+
+TEST_F(DatabaseFileMock, GetApplicationId){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(0, header.GetApplicationId());
+}    
+
+TEST_F(DatabaseFileMock, GetVersionValidFor){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(4, header.GetVersionValidFor());
+}    
+
+TEST_F(DatabaseFileMock, GetSqliteVersionNumber){
+    ASSERT_EQ(true, header.LoadFromFile("ValidTestFile.db"));
+    ASSERT_EQ(3031001, header.GetSqliteVersionNumber());
+}

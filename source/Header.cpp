@@ -45,16 +45,6 @@ namespace SQLite
         memcpy((void *)&header_ctx, header_buffer, sizeof(header_ctx));
         if (strcmp(Header::HEADER_STRING.c_str(), header_ctx.header_string) != 0)
             return false;
-
-        if ( Helpers::IsLittleEndian() ){ 
-            header_ctx.db_page_size = Helpers::ChangeEndian_U16(header_ctx.db_page_size);
-            header_ctx.file_change_counter = Helpers::ChangeEndian_U32(header_ctx.file_change_counter);    
-            header_ctx.db_size_in_pages = Helpers::ChangeEndian_U32(header_ctx.db_size_in_pages);
-            header_ctx.version_valid_for = Helpers::ChangeEndian_U32(header_ctx.version_valid_for);
-            header_ctx.sqlite_version_number = Helpers::ChangeEndian_U32(header_ctx.sqlite_version_number);
-            SetSQLiteVersion(header_ctx.sqlite_version_number);
-        }
-
         return true;
     }
 
@@ -70,12 +60,12 @@ namespace SQLite
         printf("\tPage Size ................... %d\n", header_ctx.db_page_size);
         printf("\tWrite Version ............... %d\n", int(header_ctx.write_version));
         printf("\tRead Version ................ %d\n", int(header_ctx.read_version));
-        printf("\tDatabase size in pages ...... %d\n", header_ctx.db_size_in_pages);
+        printf("\tDatabase size in pages ...... %d\n", GetDatabaseSizeInPages());
         printf("\tMaximum Payload Fraction .... %d\n", header_ctx.maximum_payload_fraction);
         printf("\tMinumum Payload Fraction .... %d\n", header_ctx.minimum_payload_fraction);
         printf("\tLeaf payload fraction ....... %d\n", header_ctx.leaf_payload_fraction);
-        printf("\tFile change counter ......... %d\n", header_ctx.file_change_counter);
-        printf("\tSQLite Version Number ....... %d\n", header_ctx.sqlite_version_number);
+        printf("\tFile change counter ......... %d\n", GetFileChangeCounter());
+        printf("\tSQLite Version Number ....... %d\n", GetSqliteVersionNumber());
         printf("\tVersion Valid ............... %d\n", header_ctx.version_valid_for);
         printf("-------------------------------------------------------------------------------\n");
         printf("*******************************************************************************\n");
@@ -89,7 +79,9 @@ namespace SQLite
     
     uint16_t Header::GetDatabasePageSize() 
     {
-        return header_ctx.db_page_size;
+        return Helpers::IsLittleEndian() ? 
+               Helpers::ChangeEndian_U16(header_ctx.db_page_size) :
+               header_ctx.db_page_size;
     }
     
     Header::rw_version Header::GetWriteVersion() 
@@ -124,72 +116,100 @@ namespace SQLite
     
     uint32_t Header::GetFileChangeCounter() 
     {
-        return header_ctx.file_change_counter;
-    }
+        return Helpers::IsLittleEndian() ? 
+               Helpers::ChangeEndian_U32(header_ctx.file_change_counter) :
+               header_ctx.file_change_counter;
+    }   
     
     uint32_t Header::GetDatabaseSizeInPages() 
     {
-        return header_ctx.db_size_in_pages;
+        return Helpers::IsLittleEndian() ? 
+               Helpers::ChangeEndian_U32(header_ctx.db_size_in_pages) :
+               header_ctx.db_size_in_pages;
     }
     
     uint32_t Header::GetFirstFreelistPage() 
     {
-        return header_ctx.first_freelist_page;
+        return Helpers::IsLittleEndian() ? 
+               Helpers::ChangeEndian_U32(header_ctx.first_freelist_page) :
+               header_ctx.first_freelist_page;
     }
     
     uint32_t Header::GetNumberOfFreelistPages() 
     {
-        return header_ctx.number_of_freelist_pages;
+        return Helpers::IsLittleEndian() ? 
+               Helpers::ChangeEndian_U32(header_ctx.number_of_freelist_pages) :
+               header_ctx.number_of_freelist_pages;
     }
     
     uint32_t Header::GetSchemaCookie() 
     {
-        return header_ctx.schema_cookie;
+        return Helpers::IsLittleEndian() ? 
+               Helpers::ChangeEndian_U32(header_ctx.schema_cookie) : 
+               header_ctx.schema_cookie;
     }
     
     uint32_t Header::GetSchemaFormatNumber() 
     {
-        return header_ctx.schema_format_number;
+        return Helpers::IsLittleEndian() ? 
+               Helpers::ChangeEndian_U32(header_ctx.schema_format_number) :
+               header_ctx.schema_format_number;
     }
     
     uint32_t Header::GetDefaultPageCacheSize() 
     {
-        return header_ctx.default_page_cache_size;
+        return Helpers::IsLittleEndian() ? 
+               Helpers::ChangeEndian_U32(header_ctx.default_page_cache_size) :
+               header_ctx.default_page_cache_size;
     }
     
     uint32_t Header::GetRootBTreePage() 
     {
-        return header_ctx.root_b_tree_page;
+        return Helpers::IsLittleEndian() ? 
+               Helpers::ChangeEndian_U32(header_ctx.root_b_tree_page) :
+               header_ctx.root_b_tree_page;
     }
     
     Header::encoding Header::GetTextEncoding() 
     {
-        return header_ctx.text_encoding;
+        return Helpers::IsLittleEndian() ? 
+               Header::encoding (Helpers::ChangeEndian_U32(uint32_t (header_ctx.text_encoding))) : 
+               Header::encoding (header_ctx.text_encoding);
     }
     
     uint32_t Header::GetUserVersion() 
     {
-        return header_ctx.user_version;
+        return Helpers::IsLittleEndian() ?
+               Helpers::ChangeEndian_U32(header_ctx.user_version) :
+               header_ctx.user_version;
     }
     
     uint32_t Header::GetIncrementalVacuumMode() 
     {
-        return header_ctx.incremental_vacuum_mode;
+        return Helpers::IsLittleEndian() ?
+               Helpers::ChangeEndian_U32(header_ctx.incremental_vacuum_mode) :
+               header_ctx.incremental_vacuum_mode;
     }
     
     uint32_t Header::GetApplicationId() 
     {
-        return header_ctx.application_id;
+        return Helpers::IsLittleEndian() ?
+               Helpers::ChangeEndian_U32(header_ctx.application_id) :
+               header_ctx.application_id;
     }
     
     uint32_t Header::GetVersionValidFor() 
     {
-        return header_ctx.version_valid_for;
+        return Helpers::IsLittleEndian() ?
+               Helpers::ChangeEndian_U32(header_ctx.version_valid_for) :
+               header_ctx.version_valid_for;
     }
     
     uint32_t Header::GetSqliteVersionNumber() 
     {
-        return header_ctx.sqlite_version_number;
+        return Helpers::IsLittleEndian() ? 
+               Helpers::ChangeEndian_U32(header_ctx.sqlite_version_number) :
+               header_ctx.sqlite_version_number;
     }
     
 
