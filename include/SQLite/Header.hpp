@@ -19,7 +19,7 @@
  * @brief SQL Header
  * 
  * Offset	Size	Description
- * 0	    16	    The header string: "Header format 3\000"
+ * 0	    16	    The header string: "SQLite format 3\000"
  * 16	    2	    The database page size in bytes. Must be a power of two between 512 and 32768 inclusive, or the value 1
  * representing  a page size of 65536.
  * 18	    1	    File format write version. 1 for legacy; 2 for WAL.
@@ -113,7 +113,31 @@ public:
     bool ParseHeader(const uint8_t* header_buffer);
     void PrintInfo();
     std::string GetSQLiteVersion();
-    
+
+    std::string GetHeaderString();
+
+    uint16_t GetDatabasePageSize();
+    rw_version_t GetWriteVersion();
+    rw_version_t GetReadVersion();
+    uint8_t GetBytesOfUnusedSpace();
+    uint8_t GetMaximumPayloadFraction();
+    uint8_t GetMinimumPayloadFraction();
+    uint8_t GetLeafPayloadFraction();
+    uint32_t GetFileChangeCounter();
+    uint32_t GetDatabaseSizeInPages();
+    uint32_t GetFirstFreelistPage();
+    uint32_t GetNumberOfFreelistPages();
+    uint32_t GetSchemaCookie();
+    uint32_t GetSchemaFormatNumber();
+    uint32_t GetDefaultPageCacheSize();
+    uint32_t GetRootBTreePage();
+    uint32_t GetTextEncoding();
+    uint32_t GetUserVersion();
+    uint32_t GetIncrementalVacuumMode();
+    uint32_t GetApplicationId();
+    uint32_t GetVersionValidFor();
+    uint32_t GetSqliteVersionNumber();
+
 private:
     void SetSQLiteVersion(uint32_t numeric_version);
 

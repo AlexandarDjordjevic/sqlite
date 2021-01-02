@@ -10,6 +10,10 @@
 namespace SQLite
 {
     Header::Header() = default;
+    
+    Header::~Header(){
+        
+    }
 
     bool Header::LoadFromFile(const std::string& file_path) 
     {
@@ -22,15 +26,17 @@ namespace SQLite
 
         uint8_t data[sizeof(sql_header)];
         size_t fetched = fread(data, 1, sizeof(sql_header), db);
-        if (sizeof(sql_header) == fetched){
-            if (ParseHeader(data) == false){
-                printf(COLOR_RED);
-                printf("Invalid SQLite header_ctx.\n");
-                printf(COLOR_RESET);
-                return false;
-            }
-            PrintInfo();
+        if (sizeof(sql_header) != fetched){
+            fclose(db);
+            return false;
         }
+
+        if (ParseHeader(data) == false){
+            fclose(db);
+            return false;
+        }
+
+        fclose(db);
         return true;
     }
 
@@ -79,6 +85,17 @@ namespace SQLite
     {
         return sqlite_version;
     }
+    
+    std::string Header::GetHeaderString() 
+    {
+        return std::string(header_ctx.header_string);
+    }
+    
+    uint16_t Header::GetDatabasePageSize() 
+    {
+        return header_ctx.db_page_size;
+    }
+
 
     void Header::SetSQLiteVersion(uint32_t numeric_version){
         auto x = numeric_version / 1000000;
@@ -89,4 +106,6 @@ namespace SQLite
         version << std::to_string(x) << '.' << std::to_string(y) << '.' << std::to_string(z);
         sqlite_version = version.str();
     }
+
+
 }
