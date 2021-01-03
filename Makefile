@@ -1,7 +1,7 @@
 
 MAIN_SRC = main.c 
 SRC_DIR = source
-TEST_HEADER_SRC = tests/header_tests.cpp
+TEST_HEADER_SRC = $(wildcard tests/*.cpp)
 LDFLAGS += -L$(LIB_DIR)/ -lsqlite
 CXXFLAGS += -std=c++11 -Iinclude -fPIC
 
@@ -15,7 +15,7 @@ MODULES := $(notdir $(wildcard $(SRC_DIR)/*.cpp))
 OBJECTS := $(MODULES:.cpp=.o)
 
 .PHONY: all
-all: lsqlite main header_tests
+all: lsqlite main unit_tests
 
 %.o: $(SRC_DIR)/%.cpp
 	$(info Building $<)
@@ -30,14 +30,16 @@ lsqlite: make_dirs objects
 	ar rDc $(LIB_DIR)/libsqlite.a $(wildcard $(OBJ_DIR)/*.o)
 	ranlib $(LIB_DIR)/libsqlite.a
 
-.PHONY: header_tests
-header_tests: lsqlite 
-	$(CXX) $(TEST_HEADER_SRC) $ $(CXXFLAGS) $(LDFLAGS) -lgtest -lgtest_main -lpthread -o $(TESTS_DIR)/header_tests
+#Tests
+.PHONY: unit_tests
+unit_tests: lsqlite 
+	$(CXX) $(TEST_HEADER_SRC) $ $(CXXFLAGS) $(LDFLAGS) -lgtest -lgtest_main -lpthread -o $(TESTS_DIR)/$@
 
-.PHONY: run_header_tests
-run_header_tests: header_tests
+.PHONY: run_tests
+run_tests: unit_tests
 	clear
-	./$(TESTS_DIR)/header_tests
+	./$(TESTS_DIR)/$<
+
 
 #prepare all directories for build artifacts
 make_dirs:
@@ -45,9 +47,6 @@ make_dirs:
 	mkdir -p $(TESTS_DIR)
 	mkdir -p $(LIB_DIR)
 	mkdir -p $(BIN_DIR)
-
-.PHONY: run_all_tests
-run_all_tests: run_header_tests
 
 .PHONY: main
 main: lsqlite

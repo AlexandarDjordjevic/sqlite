@@ -27,7 +27,7 @@
 */
 namespace SQLite
 {
-class Header{
+class FileHeader{
 public:
     /* Typedefs */
     enum class rw_version : uint8_t {
@@ -74,18 +74,18 @@ public:
      * @brief Default contstructor
      * 
      */
-    Header();
+    FileHeader();
 
     /**
      * @brief Default destructor
      * 
      */
-    ~Header();
+    ~FileHeader();
 
-    Header(const Header &) = delete;
-    Header &operator=(const Header &) = delete;
-    Header(Header &&) = delete;
-    Header &operator=(const Header &&) = delete;
+    FileHeader(const FileHeader &) = delete;
+    FileHeader &operator=(const FileHeader &) = delete;
+    FileHeader(FileHeader &&) = delete;
+    FileHeader &operator=(const FileHeader &&) = delete;
 
     /**
      * @brief Load database from file

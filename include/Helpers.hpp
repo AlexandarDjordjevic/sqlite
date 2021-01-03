@@ -29,6 +29,10 @@ extern uint16_t ChangeEndian_U16(uint16_t value);
  * @return false big endian
  */
 extern bool IsLittleEndian();  
+
+extern uint16_t ToBigEndian_U16(uint16_t value);
+extern uint32_t ToBigEndian_U32(uint32_t value);
+
 // };  
 } // namespace Helpers
 
