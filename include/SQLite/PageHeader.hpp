@@ -62,6 +62,13 @@ namespace SQLite
 
         bool Deserialize(uint8_t* data);
 
+        uint8_t GetFlags();
+        uint16_t GetOffsetToTheFirstFreeblock();
+        uint16_t GetNumberOfCellsOnPage();
+        uint16_t GetFirstByteOfContentArea();
+        uint8_t GetNumberOfFragmentedFreeBytes();
+        uint32_t GetRightChild();
+        
     private:
         header_t header_ctx;
     };
